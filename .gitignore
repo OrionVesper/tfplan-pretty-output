@@ -1,0 +1,42 @@
+# Built binary
+tfplan-pretty-output
+/tfplan-pretty-output
+/bin/
+
+# Test artifacts
+*.test
+*.out
+coverage.txt
+coverage.html
+
+# Terraform working files (for testing tfplan-pretty-output against real terraform)
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+.tfplan.tmp
+*.tfplan
+
+# tfplan-pretty-output local data (don't commit user plans/configs to repo)
+.tfplan/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vs/
+
+# Go
+vendor/
+go.work
+go.work.sum
+
+# Misc
+*.log
