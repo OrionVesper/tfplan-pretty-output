@@ -1,0 +1,91 @@
+# .goreleaser.yml
+# https://goreleaser.com — automates Go binary releases
+
+version: 2
+
+project_name: tfplan-pretty-output
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: tfplan-pretty-output
+    main: .
+    binary: tfplan-pretty-output
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X github.com/OrionVesper/tfplan-pretty-output/cmd.Version={{ .Version }}
+      - -X github.com/OrionVesper/tfplan-pretty-output/cmd.Commit={{ .ShortCommit }}
+      - -X github.com/OrionVesper/tfplan-pretty-output/cmd.Date={{ .Date }}
+
+archives:
+  - id: tfplan-pretty-output
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    format: tar.gz
+    files:
+      - README.md
+      - INSTALL.md
+      - LICENSE*
+
+checksum:
+  name_template: 'checksums.txt'
+  algorithm: sha256
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - '^docs:'
+      - '^chore:'
+      - '^test:'
+      - typo
+      - Merge pull request
+      - Merge branch
+  groups:
+    - title: '✨ Features'
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 0
+    - title: '🐛 Bug fixes'
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 1
+    - title: '⚡ Performance'
+      regexp: '^.*?perf(\([[:word:]]+\))??!?:.+$'
+      order: 2
+    - title: '🔧 Refactoring'
+      regexp: '^.*?refactor(\([[:word:]]+\))??!?:.+$'
+      order: 3
+    - title: 'Other'
+      order: 999
+
+release:
+  github:
+    owner: OrionVesper
+    name: tfplan-pretty-output
+  name_template: "{{ .ProjectName }} {{ .Version }}"
+  header: |
+    ## tfplan-pretty-output {{ .Version }}
+
+    Terminal-native Terraform plan reviewer.
+  footer: |
+    ## Install
+
+    See [INSTALL.md](https://github.com/OrionVesper/tfplan-pretty-output/blob/main/INSTALL.md) for full installation instructions.
+
+    **Quick install (macOS Apple Silicon):**
+    ```bash
+    curl -L https://github.com/OrionVesper/tfplan-pretty-output/releases/download/{{ .Tag }}/tfplan-pretty-output_Darwin_arm64.tar.gz | tar xz
+    sudo mv tfplan-pretty-output /usr/local/bin/
+    ```
