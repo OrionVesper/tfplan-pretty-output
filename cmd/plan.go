@@ -32,7 +32,7 @@ Examples:
 	RunE:               runPlan,
 }
 
-var lineageNameRe = regexp.MustCompile(`^[a-z0-9][a-z0-9-]*[a-z0-9]$`)
+var lineageNameRe = regexp.MustCompile(`^[a-zA-Z]+$`)
 
 func runPlan(cmd *cobra.Command, args []string) error {
     if len(args) == 0 || strings.HasPrefix(args[0], "-") {
@@ -118,20 +118,18 @@ func runPlan(cmd *cobra.Command, args []string) error {
 }
 
 func validateLineageName(name string) error {
-	if name == "" {
-		return errors.New("plan name is empty")
-	}
-	if strings.HasPrefix(name, "-") {
-		return fmt.Errorf("plan name %q cannot start with '-'", name)
-	}
-	if len(name) < 2 || len(name) > 30 {
-		return errors.New("plan name must be 2–30 characters")
-	}
-	if !lineageNameRe.MatchString(name) {
-		return errors.New(
-			"plan name must be lowercase alphanumeric with hyphens (e.g. 'prod', 'staging-v2')")
-	}
-	return nil
+    if name == "" {
+        return fmt.Errorf("lineage name cannot be empty")
+    }
+
+    if !lineageNameRegex.MatchString(name) {
+        return fmt.Errorf(
+            "invalid lineage name %q: only letters (a-z, A-Z) are allowed; "+
+                "no numbers, hyphens, symbols, or spaces",
+            name)
+    }
+
+    return nil
 }
 
 func hasOutFlag(args []string) bool {
