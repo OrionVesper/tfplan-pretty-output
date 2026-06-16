@@ -32,7 +32,7 @@ Examples:
 	RunE:               runPlan,
 }
 
-var lineageNameRe = regexp.MustCompile(`^[a-zA-Z]+$`)
+var lineageNameRegex = regexp.MustCompile(`^[a-zA-Z]+$`)
 
 func runPlan(cmd *cobra.Command, args []string) error {
     if len(args) == 0 || strings.HasPrefix(args[0], "-") {
